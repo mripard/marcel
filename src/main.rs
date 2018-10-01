@@ -1,6 +1,19 @@
 #[macro_use]
 extern crate nom;
 
+struct RegisterWrite {
+    register:	u32,
+    timestamp:	String,
+    value:	u32,
+}
+
+impl fmt::Debug for RegisterWrite {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "timestamp: {:?} reg {:08x?} value {:08x?}",
+               self.timestamp, self.register, self.value)
+    }
+}
+
 named!(timestamp_parser,
        delimited!(
            tag!("[ "),
