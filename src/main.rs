@@ -2,6 +2,7 @@
 extern crate nom;
 
 use nom::is_hex_digit;
+use nom::is_space;
 
 struct RegisterWrite {
     register:	u32,
@@ -130,4 +131,33 @@ fn value_parser_test() {
     let string = "";
     assert_eq!(value_parser(string.as_bytes()),
                Err(nom::Err::Incomplete(nom::Needed::Size(4))));
+}
+
+named!(log_line_parser<&[u8], RegisterWrite>,
+       do_parse!(
+           _time: timestamp_parser >>
+           take_while!(is_space) >>
+           take_until_and_consume!(":") >>
+           take_while!(is_space) >>
+           _reg: register_parser >>
+           take_while!(is_space) >>
+           _val: value_parser >>
+           (
+               RegisterWrite {
+                   register: _reg,
+                   timestamp: String::from_utf8(_time.to_vec()).unwrap(),
+                   value: _val,
+               }
+           )
+       )
+);
+
+#[test]
+fn log_line_parser_test() {
+    let string = "[ 1.002540] 1ca0000.dsi: reg=0x42424242 val=0x84848484";
+    let result = log_line_parser(string.as_bytes()).unwrap().1;
+
+    assert_eq!(result.register, 0x42424242);
+    assert_eq!(result.timestamp, "1.002540");
+    assert_eq!(result.value, 0x84848484);
 }
