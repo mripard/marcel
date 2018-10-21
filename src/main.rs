@@ -4,6 +4,13 @@ extern crate nom;
 use nom::is_hex_digit;
 use nom::is_space;
 
+use std::env;
+use std::fmt;
+use std::fs::File;
+use std::io;
+use std::io::prelude::*;
+use std::str;
+
 struct RegisterWrite {
     register:	u32,
     timestamp:	String,
@@ -160,4 +167,22 @@ fn log_line_parser_test() {
     assert_eq!(result.register, 0x42424242);
     assert_eq!(result.timestamp, "1.002540");
     assert_eq!(result.value, 0x84848484);
+}
+
+fn read_register_writes(filename: &str) -> io::Result<()> {
+    let file = File::open(&filename)?;
+    let reader = io::BufReader::new(file);
+
+    for line in reader.lines() {
+        let line = line?;
+
+        println!("{:?}", log_line_parser(line.as_bytes()));
+    }
+
+    Ok(())
+}
+
+fn main() {
+    let filename = env::args().nth(1).expect("Set a filename");
+    read_register_writes(&filename).expect("Failed to read lines");
 }
