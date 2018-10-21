@@ -75,3 +75,31 @@ fn hex_parser_test() {
     assert_eq!(hex_parser(string.as_bytes()),
                Err(nom::Err::Incomplete(nom::Needed::Size(1))));
 }
+
+named!(register_parser<&[u8], u32>,
+       do_parse!(
+           tag!("reg=") >>
+           _hex: hex_parser >>
+           (_hex)
+       )
+);
+
+#[test]
+fn register_parser_test() {
+    let string = "reg=0x42424242";
+    let rest = "";
+    assert_eq!(register_parser(string.as_bytes()),
+               Ok((rest.as_bytes(), 0x42424242)));
+
+    let string = "reg=0x";
+    assert_eq!(register_parser(string.as_bytes()),
+               Err(nom::Err::Incomplete(nom::Needed::Size(1))));
+
+    let string = "reg=";
+    assert_eq!(register_parser(string.as_bytes()),
+               Err(nom::Err::Incomplete(nom::Needed::Size(2))));
+
+    let string = "";
+    assert_eq!(register_parser(string.as_bytes()),
+               Err(nom::Err::Incomplete(nom::Needed::Size(4))));
+}
