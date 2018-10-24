@@ -7,6 +7,8 @@ use std::str;
 use nom::is_hex_digit;
 use nom::is_space;
 
+use error::Result;
+
 pub struct RegisterWrite {
     register:	u32,
     timestamp:	String,
@@ -165,7 +167,7 @@ fn log_line_parser_test() {
     assert_eq!(result.value, 0x84848484);
 }
 
-pub fn read_register_writes(filename: &str) -> io::Result<()> {
+pub fn read_register_writes(filename: &str) -> Result<()> {
     let file = File::open(&filename)?;
     let reader = io::BufReader::new(file);
 

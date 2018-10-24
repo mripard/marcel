@@ -3,6 +3,7 @@ extern crate nom;
 
 use std::env;
 
+mod error;
 mod trace;
 
 use trace::read_register_writes;
