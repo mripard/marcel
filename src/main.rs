@@ -21,7 +21,5 @@ fn main() {
     let device = Device::new(&device_file, offset).unwrap();
     println!("{:?}", device);
 
-    for write in writes.writes {
-        device.decode(&write);
-    }
+    device.decode(&writes);
 }

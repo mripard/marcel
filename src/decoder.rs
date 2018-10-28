@@ -4,6 +4,7 @@ use std::fs::File;
 
 use error::Result;
 use trace::RegisterWrite;
+use trace::Trace;
 
 #[derive(Deserialize)]
 struct Bit {
@@ -43,21 +44,11 @@ pub struct Device {
 }
 
 impl Device {
-    pub fn new(filename: &str, offset: u64) -> Result<Device> {
-        let file = File::open(&filename)?;
-        let regs = yaml::from_reader(&file)?;
-
-        Ok(Device {
-            offset: offset,
-            regs: regs,
-        })
-    }
-
-    pub fn decode(&self, _reg: &RegisterWrite) {
+    fn decode_register(&self, _reg: &RegisterWrite) {
         let mut iter = self.regs.iter();
         let reg_desc = match iter.find(|x| x.offset == (_reg.register - self.offset)) {
             None => {
-                println!("Unknown Register: {:08x?}", _reg.register);
+                println!("Unknown Register: {:08x?}", _reg.register - self.offset);
                 return;
             }
             Some(v) => v,
@@ -69,6 +60,22 @@ impl Device {
             if ((1 << bit.index) & _reg.value) != 0 {
                 println!("   + Bit: {} (0x{:08x})", bit.name, 1 << bit.index);
             }
+        }
+    }
+
+    pub fn new(filename: &str, offset: u64) -> Result<Device> {
+        let file = File::open(&filename)?;
+        let regs = yaml::from_reader(&file)?;
+
+        Ok(Device {
+            offset: offset,
+            regs: regs,
+        })
+    }
+
+    pub fn decode(&self, _trace: &Trace) {
+        for write in &_trace.writes {
+            self.decode_register(&write);
         }
     }
 }
