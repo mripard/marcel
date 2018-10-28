@@ -10,9 +10,9 @@ use nom::is_space;
 use error::Result;
 
 pub struct RegisterWrite {
-    register:	u32,
+    register:	u64,
     timestamp:	String,
-    value:	u32,
+    value:	u64,
 }
 
 impl fmt::Debug for RegisterWrite {
@@ -57,11 +57,11 @@ fn timestamp_parser_test() {
                Err(nom::Err::Incomplete(nom::Needed::Size(2))));
 }
 
-named!(hex_parser<&[u8], u32>,
+named!(hex_parser<&[u8], u64>,
        do_parse!(
            tag!("0x") >>
            _hex: take_while_m_n!(1, 8, is_hex_digit) >>
-           (u32::from_str_radix(str::from_utf8(_hex).unwrap(), 16).unwrap())
+           (u64::from_str_radix(str::from_utf8(_hex).unwrap(), 16).unwrap())
        )
 );
 
@@ -82,7 +82,7 @@ fn hex_parser_test() {
                Err(nom::Err::Incomplete(nom::Needed::Size(1))));
 }
 
-named!(register_parser<&[u8], u32>,
+named!(register_parser<&[u8], u64>,
        do_parse!(
            tag!("reg=") >>
            _hex: hex_parser >>
@@ -110,7 +110,7 @@ fn register_parser_test() {
                Err(nom::Err::Incomplete(nom::Needed::Size(4))));
 }
 
-named!(value_parser<&[u8], u32>,
+named!(value_parser<&[u8], u64>,
        do_parse!(
            tag!("val=") >>
            _hex: hex_parser >>
