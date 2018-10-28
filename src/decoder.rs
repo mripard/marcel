@@ -1,4 +1,5 @@
 use serde_yaml as yaml;
+use std::collections::HashMap;
 use std::fmt;
 use std::fs::File;
 
@@ -41,10 +42,11 @@ impl fmt::Debug for Register {
 pub struct Device {
     offset:	u64,
     regs:	Vec<Register>,
+    state:	HashMap<u64, u64>,
 }
 
 impl Device {
-    fn decode_register(&self, _reg: &RegisterWrite) {
+    fn decode_register(&mut self, _reg: &RegisterWrite) {
         let mut iter = self.regs.iter();
         let reg_desc = match iter.find(|x| x.offset == (_reg.register - self.offset)) {
             None => {
@@ -61,6 +63,8 @@ impl Device {
                 println!("   + Bit: {} (0x{:08x})", bit.name, 1 << bit.index);
             }
         }
+
+        self.state.insert(reg_desc.offset, _reg.value);
     }
 
     pub fn new(filename: &str, offset: u64) -> Result<Device> {
@@ -70,10 +74,11 @@ impl Device {
         Ok(Device {
             offset: offset,
             regs: regs,
+            state: HashMap::new(),
         })
     }
 
-    pub fn decode(&self, _trace: &Trace) {
+    pub fn decode(&mut self, _trace: &Trace) {
         for write in &_trace.writes {
             self.decode_register(&write);
         }
