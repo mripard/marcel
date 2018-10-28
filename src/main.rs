@@ -19,7 +19,6 @@ fn main() {
 
     let device_file = env::args().nth(2).expect("Set a device yaml file");
     let device = Device::new(&device_file, offset).unwrap();
-    println!("{:?}", device);
 
     device.decode(&writes);
 }
