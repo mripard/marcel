@@ -11,9 +11,10 @@ use error::Result;
 use error::MarcelError;
 
 pub struct RegisterWrite {
-    register:	u64,
+    pub register:	u64,
+    pub value:		u64,
+
     timestamp:	String,
-    value:	u64,
 }
 
 impl fmt::Debug for RegisterWrite {

@@ -5,3 +5,6 @@ authors = ["Maxime Ripard <maxime.ripard@anandra.org>"]
 
 [dependencies]
 nom = "*"
+serde = "1.0"
+serde_derive = "*"
+serde_yaml = "0.8"
