@@ -6,6 +6,7 @@ pub type Result<T> = result::Result<T, MarcelError>;
 #[derive(Debug, Clone)]
 pub enum MarcelError {
     IOError,
+    TraceError,
 }
 
 impl From<io::Error> for MarcelError {

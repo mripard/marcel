@@ -8,6 +8,7 @@ use nom::is_hex_digit;
 use nom::is_space;
 
 use error::Result;
+use error::MarcelError;
 
 pub struct RegisterWrite {
     register:	u64,
@@ -20,6 +21,11 @@ impl fmt::Debug for RegisterWrite {
         write!(f, "timestamp: {:?} reg {:08x?} value {:08x?}",
                self.timestamp, self.register, self.value)
     }
+}
+
+#[derive(Debug)]
+pub struct Trace {
+    pub writes:	Vec<RegisterWrite>,
 }
 
 named!(timestamp_parser,
@@ -167,15 +173,21 @@ fn log_line_parser_test() {
     assert_eq!(result.value, 0x84848484);
 }
 
-pub fn read_register_writes(filename: &str) -> Result<()> {
+pub fn read_register_writes(filename: &str) -> Result<Trace> {
     let file = File::open(&filename)?;
     let reader = io::BufReader::new(file);
+    let mut writes: Vec<RegisterWrite> = Vec::new();
 
     for line in reader.lines() {
         let line = line?;
-
-        println!("{:?}", log_line_parser(line.as_bytes()));
+        let write = log_line_parser(line.as_bytes());
+        match write {
+            Ok(w) => writes.push(w.1),
+            Err(_) => return Err(MarcelError::TraceError),
+        }
     }
 
-    Ok(())
+    Ok(Trace {
+        writes: writes,
+    })
 }
