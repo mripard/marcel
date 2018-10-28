@@ -56,12 +56,32 @@ impl Device {
             Some(v) => v,
         };
 
+        let reg_state = match self.state.get(&reg_desc.offset) {
+            None => 0,
+            Some(v) => *v,
+        };
+
         println!("-- Register: {} (0x{:04x})", reg_desc.name, reg_desc.offset);
 
+        let mut cache = _reg.value;
+        let value = reg_state ^ cache;
         for bit in &reg_desc.bits {
-            if ((1 << bit.index) & _reg.value) != 0 {
-                println!("   + Bit: {} (0x{:08x})", bit.name, 1 << bit.index);
+            let mask = 1 << bit.index;
+
+            if (mask & value) == 0 {
+                continue;
             }
+
+            if (reg_state & mask) == 0 {
+                println!("   + Bit: {} (0x{:08x})", bit.name, mask);
+                cache = cache - mask;
+            } else {
+                println!("   - Bit: {} (0x{:08x})", bit.name, mask);
+            }
+        }
+
+        if cache != 0 {
+            println!("Undecoded values: {:08x?}", cache);
         }
 
         self.state.insert(reg_desc.offset, _reg.value);
