@@ -20,12 +20,22 @@ impl fmt::Debug for Bit {
 }
 
 #[derive(Deserialize)]
+struct Field {
+    name:	String,
+    offset:	u8,
+    width:	u8,
+}
+
+#[derive(Deserialize)]
 struct Register {
     name:	String,
     offset:	u64,
 
     #[serde(default)]
     bits:	Vec<Bit>,
+
+    #[serde(default)]
+    fields:	Vec<Field>,
 }
 
 impl fmt::Debug for Register {
@@ -79,6 +89,14 @@ impl Device {
             } else {
                 println!("   - Bit: {} (0x{:08x})", bit.name, mask);
             }
+        }
+
+        for field in &reg_desc.fields {
+            let mask = ((1 << field.width) - 1) << field.offset;
+            let value = mask & cache;
+
+            println!("   = Field: {} = 0x{:x}", field.name, value >> field.offset);
+            cache = cache - value;
         }
 
         if cache != 0 {
