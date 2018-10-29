@@ -1,0 +1,150 @@
+---
+- name: CSI Enable Register
+  offset: 0x00
+  bits:
+    - name: PCLK Count
+      index: 9
+    - name: Luma Enable
+      index: 8
+    - name: Read FIFO Enable
+      index: 3
+    - name: CCIR656 Field Reverse
+      index: 2
+    - name: CSI Enable
+      index: 0
+- name: CSI Configuration Register
+  offset: 0x04
+  bits:
+    - name: VRef Positive Polarity
+      index: 2
+    - name: HRef Positive Polarity
+      index: 1
+    - name: Data Clock Rising Edge
+      index: 0
+  fields:
+    - name: Input Data Format
+      offset: 20
+      width: 3
+    - name: Output Data Format
+      offset: 16
+      width: 4
+    - name: Field Selection
+      offset: 10
+      width: 2
+    - name: Input Sequence
+      offset: 8
+      width: 2
+- name: CSI Capture Control Register
+  offset: 0x08
+  bits:
+    - name: Video Capture Enable
+      index: 1
+    - name: Image Capture Enable
+      index: 0
+- name: CSI Scale Register
+  offset: 0x0c
+  fields:
+    - name: Vertical Mask
+      offset: 24
+      width: 4
+    - name: Horizontal Mask
+      offset: 0
+      width: 16
+- name: CSI Channel 0 FIFO 0 Buffer 0 Register
+  offset: 0x10
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 FIFO 0 Buffer 1 Register
+  offset: 0x14
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 FIFO 1 Buffer 0 Register
+  offset: 0x18
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 FIFO 1 Buffer 1 Register
+  offset: 0x1c
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 FIFO 2 Buffer 0 Register
+  offset: 0x20
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 FIFO 2 Buffer 1 Register
+  offset: 0x24
+  fields:
+    - name: Buffer Address
+      offset: 0
+      width: 32
+- name: CSI Channel 0 Interrupt Enable Register
+  offset: 0x30
+  bits:
+    - name: VSync Interrupt Enable
+      index: 7
+    - name: HSync FIFO Overflow Interrupt Enable
+      index: 6
+    - name: PRTC Error Interrupt Enable
+      index: 5
+    - name: FIFO2 Overflow Interrupt Enable
+      index: 4
+    - name: FIFO1 Overflow Interrupt Enable
+      index: 3
+    - name: FIFO0 Overflow Interrupt Enable
+      index: 2
+    - name: Frame Done Interrupt Enable
+      index: 1
+    - name: Capture Done Interrupt Enable
+      index: 0
+- name: CSI Channel 0 Interrupt Status Register
+  offset: 0x34
+  bits:
+    - name: VSync Interrupt Flag
+      index: 7
+    - name: HSync FIFO Overflow Interrupt Flag
+      index: 6
+    - name: PRTC Error Interrupt Flag
+      index: 5
+    - name: FIFO2 Overflow Interrupt Flag
+      index: 4
+    - name: FIFO1 Overflow Interrupt Flag
+      index: 3
+    - name: FIFO0 Overflow Interrupt Flag
+      index: 2
+    - name: Frame Done Interrupt Flag
+      index: 1
+    - name: Capture Done Interrupt Flag
+      index: 0
+- name: CSI Channel 0 Horizontal Size Register
+  offset: 0x40
+  fields:
+    - name: Horizontal Length
+      offset: 16
+      width: 13
+    - name: Horizontal Start
+      offset: 0
+      width: 13
+- name: CSI Channel 0 Vertical Size Register
+  offset: 0x44
+  fields:
+    - name: Vertical Length
+      offset: 16
+      width: 13
+    - name: Vertical Start
+      offset: 0
+      width: 13
+- name: CSI Channel 0 Buffer Length Register
+  offset: 0x48
+  fields:
+    - name: Buffer Length
+      offset: 0
+      width: 13
