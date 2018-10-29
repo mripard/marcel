@@ -23,6 +23,8 @@ impl fmt::Debug for Bit {
 struct Register {
     name:	String,
     offset:	u64,
+
+    #[serde(default)]
     bits:	Vec<Bit>,
 }
 
