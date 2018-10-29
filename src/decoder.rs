@@ -66,11 +66,10 @@ impl Device {
         println!("-- Register: {} (0x{:04x})", reg_desc.name, reg_desc.offset);
 
         let mut cache = _reg.value;
-        let value = reg_state ^ cache;
         for bit in &reg_desc.bits {
             let mask = 1 << bit.index;
 
-            if (mask & value) == 0 {
+            if (mask & (reg_state ^ cache)) == 0 {
                 continue;
             }
 
